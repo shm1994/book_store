@@ -1,0 +1,72 @@
+{% extends "_base.html" %}
+{% load widget_tweaks %}
+
+{% block page_title %}افزودن کتاب جدید{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+
+        <!-- دکمه بازگشت -->
+        <div class="mb-4">
+            <a href="{% url 'book_list' %}" class="btn btn-outline-secondary btn-sm">
+                &larr; بازگشت به لیست کتاب‌ها
+            </a>
+        </div>
+
+        <div class="card shadow-sm p-4">
+            <div class="row">
+
+                <!-- ستون تصویر (placeholder) -->
+                <div class="col-md-4">
+                    <div class="card-img-container bg-light d-flex align-items-center justify-content-center"
+                         style="min-height:300px; border:1px solid #eee;">
+                        <span class="text-muted">تصویر کتاب</span>
+                    </div>
+                </div>
+
+                <!-- ستون فرم -->
+                <div class="col-md-8">
+                    <h2 class="mb-4">افزودن کتاب جدید</h2>
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label">عنوان کتاب</label>
+                            {{ form.title|add_class:"form-control" }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">نویسنده</label>
+                            {{ form.author|add_class:"form-control" }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">توضیحات</label>
+                            {{ form.description|add_class:"form-control" }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">قیمت</label>
+                            {{ form.price|add_class:"form-control" }}
+                        </div>
+
+                        <div class="mt-4 d-flex gap-2">
+                            <button type="submit" class="btn btn-success px-4">
+                                ذخیره کتاب
+                            </button>
+
+                            <a href="{% url 'book_list' %}" class="btn btn-outline-secondary">
+                                انصراف
+                            </a>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
