@@ -18,13 +18,28 @@
                 <div class="col-md-4">
                     <div class="card-img-container bg-light d-flex align-items-center justify-content-center"
                          style="min-height: 300px; border: 1px solid #eee;">
-                        <!-- جای تصویر کتاب -->
                         <span class="text-muted">تصویر کتاب</span>
                     </div>
                 </div>
 
                 <!-- ستون محتوا -->
                 <div class="col-md-8">
+                    <!-- بخش مدیریت (ویرایش و حذف) -->
+                    <div class="d-flex justify-content-end gap-2 mb-3">
+                        <a href="{% url 'book_update' book.id %}" class="btn btn-outline-warning btn-sm">
+                            ویرایش کتاب
+                        </a>
+
+{#                        <!-- فرم حذف برای امنیت بیشتر -->#}
+{#                        <form action="{% url 'book_delete' book.pk %}" method="post"#}
+{#                              onsubmit="return confirm('آیا مطمئن هستید؟');">#}
+{#                            {% csrf_token %}#}
+{#                            <button type="submit" class="btn btn-outline-danger btn-sm">#}
+{#                                حذف کتاب#}
+{#                            </button>#}
+{#                        </form>#}
+                    </div>
+
                     <h1 class="mb-3">{{ book.title }}</h1>
                     <h4 class="text-muted mb-4">{{ book.author }}</h4>
 
