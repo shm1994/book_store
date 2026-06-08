@@ -30,14 +30,17 @@
                             ویرایش کتاب
                         </a>
 
-{#                        <!-- فرم حذف برای امنیت بیشتر -->#}
-{#                        <form action="{% url 'book_delete' book.pk %}" method="post"#}
-{#                              onsubmit="return confirm('آیا مطمئن هستید؟');">#}
-{#                            {% csrf_token %}#}
-{#                            <button type="submit" class="btn btn-outline-danger btn-sm">#}
-{#                                حذف کتاب#}
-{#                            </button>#}
-{#                        </form>#}
+                        <!-- فرم حذف برای امنیت بیشتر -->
+                        <a href="{% url 'book_delete' book.id %}" class="btn btn-outline-danger btn-sm">
+                            حذف کتاب کتاب
+                        </a>
+                        {#                        <form action="{% url 'book_delete' book.id %}" method="post"#}
+                        {#                              onsubmit="return confirm('آیا مطمئن هستید؟');">#}
+                        {#                            {% csrf_token %}#}
+                        {#                            <button type="submit" class="btn btn-outline-danger btn-sm">#}
+                        {#                                حذف کتاب#}
+                        {#                            </button>#}
+                        {#                        </form>#}
                     </div>
 
                     <h1 class="mb-3">{{ book.title }}</h1>
