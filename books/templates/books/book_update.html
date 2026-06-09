@@ -28,9 +28,12 @@
                 <div class="col-md-8">
                     <h2 class="mb-4">افزودن کتاب جدید</h2>
 
-                    <form method="post">
+                    <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
 
+                        <div class="mb-3">
+                            {{ form.cover|add_class:"form-control" }}
+                        </div>
                         <div class="mb-3">
                             <label class="form-label">عنوان کتاب</label>
                             {{ form.title|add_class:"form-control" }}
