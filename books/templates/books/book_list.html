@@ -45,49 +45,137 @@
         <br>
 
         <!-- pagination -->
-        <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-center pagination-lg mb-4"> {# pagination-lg برای دکمه‌های بزرگتر #}
+        <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-5 mb-4">
+            <ul class="custom-pagination pagination pagination-lg mb-0"> {# custom-pagination برای استایل سفارشی #}
 
+                {# Previous Button #}
                 {% if page_obj.has_previous %}
-                    <li class="page-item active"> {# active state for current page #}
-                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span> {# Unicode for << #}
-                            <span class="sr-only">قبلی</span> {# Accessibility #}
-                        </a>
-                    </li>
-                {% else %}
-                    <li class="page-item disabled"> {# Disabled state if no previous page #}
-                        <span class="page-link" aria-hidden="true">&laquo;</span>
-                    </li>
-                {% endif %}
-
-                {# Displaying page numbers - showing current and neighbors #}
-                {% for i in page_obj.paginator.page_range %}
-                    {% if i == page_obj.number %}
-                        <li class="page-item active" aria-current="page"><span class="page-link">{{ i }}</span></li>
-                    {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %} {# Show a few neighbors #}
-                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-                    {% elif i == 1 or i == page_obj.paginator.num_pages %} {# Always show first and last page #}
-                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-                    {% elif i == page_obj.number|add:'-3' or i == page_obj.number|add:'3' %} {# Ellipsis (...) #}
-                        <li class="page-item disabled"><span class="page-link">...</span></li>
-                    {% endif %}
-                {% endfor %}
-
-                {% if page_obj.has_next %}
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span> {# Unicode for >> #}
-                            <span class="sr-only">بعدی</span>
+                        <a class="page-link custom-prev-next" href="?page={{ page_obj.previous_page_number }}"
+                           aria-label="Previous">
+                            <i class="bi bi-chevron-left"></i> {# استفاده از آیکون Bootstrap #}
+                            <span class="d-none d-md-inline ms-1">قبلی</span>
+                            {# نمایش متن "قبلی" فقط در سایز متوسط به بالا #}
                         </a>
                     </li>
                 {% else %}
                     <li class="page-item disabled">
-                        <span class="page-link" aria-hidden="true">&raquo;</span>
+                <span class="page-link custom-prev-next disabled">
+                    <i class="bi bi-chevron-left"></i>
+                    <span class="d-none d-md-inline ms-1">قبلی</span>
+                </span>
+                    </li>
+                {% endif %}
+
+                {# Page Numbers #}
+                {% for i in page_obj.paginator.page_range %}
+                    {% if i == page_obj.number %}
+                        <li class="page-item active custom-active-page" aria-current="page">
+                            <span class="page-link">{{ i }}</span>
+                        </li>
+                        {# نمایش چند صفحه اطراف صفحه فعلی #}
+                    {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                        {# نمایش همیشه صفحه اول و آخر #}
+                    {% elif i == 1 or i == page_obj.paginator.num_pages %}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                        {# نمایش "..." برای صفحات میانی #}
+                    {% elif i == page_obj.number|add:'-3' or i == page_obj.number|add:'3' %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+
+                {# Next Button #}
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link custom-prev-next" href="?page={{ page_obj.next_page_number }}"
+                           aria-label="Next">
+                            <span class="d-none d-md-inline me-1">بعدی</span>
+                            {# نمایش متن "بعدی" فقط در سایز متوسط به بالا #}
+                            <i class="bi bi-chevron-right"></i> {# استفاده از آیکون Bootstrap #}
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                <span class="page-link custom-prev-next disabled">
+                    <span class="d-none d-md-inline me-1">بعدی</span>
+                    <i class="bi bi-chevron-right"></i>
+                </span>
                     </li>
                 {% endif %}
             </ul>
         </nav>
+
+        {# --- Inline CSS for Custom Styling --- #}
+        <style>
+            /* Base Pagination Styling */
+            .custom-pagination.pagination .page-link {
+                background-color: #f8f9fa; /* Light background */
+                color: #0d6efd; /* Bootstrap primary blue */
+                border: 1px solid #dee2e6; /* Subtle border */
+                transition: all 0.3s ease;
+                margin: 0 3px; /* Spacing between buttons */
+                border-radius: 8px !important; /* Rounded corners */
+                min-width: 45px; /* Ensure minimum width for alignment */
+                text-align: center;
+                font-weight: 500;
+            }
+
+            /* Hover effect for page numbers */
+            .custom-pagination.pagination .page-item:not(.active):not(.disabled) .page-link {
+                background-color: #e9ecef;
+            }
+
+            .custom-pagination.pagination .page-item:not(.active):not(.disabled) .page-link:hover {
+                background-color: #dee2e6;
+                color: #0a58ca; /* Darker blue on hover */
+                transform: translateY(-2px); /* Slight lift effect */
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            }
+
+            /* Active page styling */
+            .custom-pagination.pagination .page-item.active .page-link {
+                background-color: #0d6efd; /* Bootstrap primary blue */
+                color: #ffffff;
+                border-color: #0d6efd;
+                font-weight: 700;
+            }
+
+            /* Previous/Next Buttons Styling */
+            .custom-pagination .page-link.custom-prev-next {
+                padding: 0.75rem 1rem; /* More padding for buttons */
+                min-width: 60px; /* Wider for buttons with text */
+            }
+
+            /* Disabled state styling */
+            .custom-pagination .page-item.disabled .page-link {
+                color: #6c757d; /* Gray color for disabled */
+                background-color: #e9ecef;
+                border-color: #dee2e6;
+                cursor: not-allowed;
+            }
+
+            /* Ellipsis styling */
+            .custom-pagination .page-link:not(.active):not(.disabled):has(i) {
+                /* Prevents ellipsis from getting hover effects if they contain icons */
+            }
+
+            /* Responsive adjustments */
+            @media (max-width: 767.98px) {
+                .custom-pagination .page-link {
+                    min-width: 40px; /* Smaller width on small screens */
+                }
+
+                .custom-pagination .page-link.custom-prev-next {
+                    min-width: 40px; /* Narrower buttons on small screens */
+                }
+
+                .custom-pagination .page-link span.sr-only,
+                .custom-pagination .page-link span.d-none.d-md-inline {
+                    display: none !important; /* Hide text on very small screens */
+                }
+            }
+        </style>
 
 
     </div>
