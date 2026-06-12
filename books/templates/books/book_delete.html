@@ -4,7 +4,7 @@
 {% block page_title %}حذف کتاب {{ book.title }}{% endblock %}
 
 {% block content %}
-    <div class="container mt-5">
+    <div class="container mt-5" style="direction: rtl">
 
         <!-- دکمه بازگشت -->
         <div class="mb-4">
@@ -20,7 +20,11 @@
                 <div class="col-md-4">
                     <div class="card-img-container bg-light d-flex align-items-center justify-content-center"
                          style="min-height:300px; border:1px solid #eee;">
-                        <span class="text-muted">تصویر کتاب</span>
+                        {% if book.cover %}
+                            <img src="{{ book.cover.url }}" class="card-img-top">
+                            {% else %}
+                            <span class="text-muted">تصویر کتاب</span>
+                        {% endif %}
                     </div>
                 </div>
 

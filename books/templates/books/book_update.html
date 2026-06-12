@@ -4,7 +4,7 @@
 {% block page_title %}ویرایش کتاب جدید{{ book.title }}{% endblock %}
 
 {% block content %}
-    <div class="container mt-5">
+    <div class="container mt-5" style="direction: rtl">
 
         <!-- دکمه بازگشت -->
         <div class="mb-4">
@@ -20,7 +20,11 @@
                 <div class="col-md-4">
                     <div class="card-img-container bg-light d-flex align-items-center justify-content-center"
                          style="min-height:300px; border:1px solid #eee;">
-                        <span class="text-muted">تصویر کتاب</span>
+                        {% if book.cover %}
+                            <img src="{{ book.cover.url }}" class="card-img-top">
+                            {% else %}
+                            <span class="text-muted">تصویر کتاب</span>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -31,9 +35,7 @@
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
 
-                        <div class="mb-3">
-                            {{ form.cover|add_class:"form-control" }}
-                        </div>
+
                         <div class="mb-3">
                             <label class="form-label">عنوان کتاب</label>
                             {{ form.title|add_class:"form-control" }}
@@ -52,6 +54,11 @@
                         <div class="mb-3">
                             <label class="form-label">قیمت</label>
                             {{ form.price|add_class:"form-control" }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">تصویر جلد کتاب</label>
+                            {{ form.cover|add_class:"form-control" }}
                         </div>
 
                         <div class="mt-4 d-flex gap-2">

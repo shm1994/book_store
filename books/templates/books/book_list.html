@@ -4,6 +4,11 @@
 {% block page_title %}لیست کتابها{% endblock %}
 
 {% block content %}
+    {#    <div class="text-center mb-4 mt-4">#}
+    {#            <a href="{% url 'book_create' %}" class="btn btn-outline-success">#}
+    {#                ایجاد کتاب جدید#}
+    {#            </a>#}
+    {#        </div>#}
     <div class="row flex-row-reverse justify-content-md-center">
         {% for book in books %}
             <div class="card m-2" style="max-width: 45%">
@@ -36,12 +41,55 @@
                 </div>
             </div>
         {% endfor %}
+
         <br>
-        <div class="text-center mb-4 mt-4">
-            <a href="{% url 'book_create' %}" class="btn btn-outline-success">
-                ایجاد کتاب جدید
-            </a>
-        </div>
+
+        <!-- pagination -->
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center pagination-lg mb-4"> {# pagination-lg برای دکمه‌های بزرگتر #}
+
+                {% if page_obj.has_previous %}
+                    <li class="page-item active"> {# active state for current page #}
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span> {# Unicode for << #}
+                            <span class="sr-only">قبلی</span> {# Accessibility #}
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"> {# Disabled state if no previous page #}
+                        <span class="page-link" aria-hidden="true">&laquo;</span>
+                    </li>
+                {% endif %}
+
+                {# Displaying page numbers - showing current and neighbors #}
+                {% for i in page_obj.paginator.page_range %}
+                    {% if i == page_obj.number %}
+                        <li class="page-item active" aria-current="page"><span class="page-link">{{ i }}</span></li>
+                    {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %} {# Show a few neighbors #}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% elif i == 1 or i == page_obj.paginator.num_pages %} {# Always show first and last page #}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% elif i == page_obj.number|add:'-3' or i == page_obj.number|add:'3' %} {# Ellipsis (...) #}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span> {# Unicode for >> #}
+                            <span class="sr-only">بعدی</span>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link" aria-hidden="true">&raquo;</span>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+
     </div>
 {% endblock %}
 
