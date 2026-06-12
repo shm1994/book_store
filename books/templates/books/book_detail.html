@@ -1,5 +1,9 @@
 {% extends "_base.html" %}
 {% load humanize %}
+{% load crispy_forms_tags %}
+{% load jalali %}
+
+{##}
 {#{% load widget_tweaks %}#}
 
 {% block page_title %}جزییات کتاب {{ book.title }}{% endblock %}
@@ -60,9 +64,10 @@
                             <div class="d-flex gap-2 ms-auto"> {# ms-auto pushes to the right #}
                                 <a href="{% url 'book_update' book.pk %}"
                                    class="btn btn-outline-warning btn-lg px-4 rounded-pill">
-                                     ویرایش
+                                    ویرایش
                                 </a>
-                                <a href="{% url 'book_delete' book.id %}" class="btn btn-outline-danger btn-lg px-4 rounded-pill">
+                                <a href="{% url 'book_delete' book.id %}"
+                                   class="btn btn-outline-danger btn-lg px-4 rounded-pill">
                                     حذف کتاب کتاب
                                 </a>
                             </div>
@@ -94,35 +99,50 @@
                         <i class="bi bi-chat-dots me-2"></i> نظرات کاربران
                     </h4>
 
-                    {# Display Comments Here - Example Placeholder #}
-                    <div class="mb-4 pb-4 border-bottom d-flex align-items-start">
-                        <div class="me-3">
-                            <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center"
-                                 style="width:50px; height:50px;">
-                                <i class="bi bi-person-circle fs-3"></i>
-                            </div>
+                    {# Display Comments Here #}
+                    {# اگر کامنتی وجود نداشت، پیام "هنوز نظری ثبت نشده است" نمایش داده می‌شود #}
+                    {% if comments %}
+                        {% for comment in comments %}
+                            {% if comment.is_active %}
+                                {# هر کامنت در یک Div مجزا قرار می‌گیرد #}
+                                <div class="mb-4 pb-4 border-bottom d-flex align-items-start">
+                                    {# d-flex فقط برای چیدمان آیکون کاربر و متن نظر است #}
+                                    {# بخش آواتار یا آیکون کاربر #}
+                                    <div class="me-3">
+                                        <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center"
+                                             style="width:50px; height:50px;">
+                                            <i class="bi bi-person-circle fs-3"></i>
+                                        </div>
+                                    </div>
+                                    {# بخش اصلی محتوای کامنت #}
+                                    <div class="flex-grow-1">
+                                        <h6 class="fw-bold mb-1 text-secondary">{{ comment.user.username }}</h6>
+                                        {% if comment.recommend %}
+                                            <p class="text-success">این کتاب را توصیه میکنم</p>
+                                        {% else %}
+                                            <p class="text-danger">این کتاب را توصیه نمی کنم</p>
+                                        {% endif %}
+                                        <p class="text-muted small mb-0">
+                                            {{ comment.text|linebreaks }}
+                                        </p>
+                                        {# نمایش تاریخ شمسی با تمپلیت تگ سفارشی #}
+                                        <p class="text-muted small">منتشر شده
+                                            در: {{ comment.datetime_created|jalali_datetime }}</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        {# این بلوک فقط زمانی نمایش داده می‌شود که لیست comments خالی باشد #}
+                        <div class="text-center text-muted py-4">
+                            هنوز نظری برای این کتاب ثبت نشده است.
                         </div>
-                        <div class="flex-grow-1">
-                            <h6 class="fw-bold mb-1 text-secondary">نوشین توکلی</h6>
-                            <p class="text-muted small mb-0">
-                                با سلام چند تا نکته میخواستم بگم اول اینکه من جزء دسته از آدمایی بودم که میگفتم کتاب
-                                خوندن لذتش به اینه که آدم کتابو بگیره دستش و بخونه اما واقعا میگم فیدیبو تو زمینه کاری
-                                خودش داره خوب عمل میکنه امیدوارم روز به روز موفق تر بشه ممنون بابت کتابهای خوبی که
-                                میزارید چونکه خیلی به روزه
-                            </p>
-                            <small class="text-muted">منتشر شده در: ۱ ساعت پیش</small>
-                        </div>
-                    </div>
+                    {% endif %}
 
-                    {# If No Comments #}
-                    {#
-                    <div class="text-center text-muted py-4">
-                        هنوز نظری برای این کتاب ثبت نشده است.
-                    </div>
-                    #}
                 </div>
             </div>
         </div>
+
 
         <!-- ===== 4. Add Comment Form ===== -->
         <div class="row">
@@ -132,41 +152,27 @@
                         <i class="bi bi-pencil-square me-2"></i> ثبت نظر جدید
                     </h4>
 
-                    <form method="POST">
-                        {% csrf_token %}
+                    {% if request.user.is_authenticated %}
+                        <form method="POST">
+                            {% csrf_token %}
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="author_name" class="form-label">نام شما</label>
-                                <input type="text" name="author_name" id="author_name"
-                                       class="form-control form-control-lg rounded-3"
-                                       placeholder="نام خود را وارد کنید"
-                                       value="{{ request.user.get_full_name }}"
-                                        {% if user.is_authenticated %} readonly {% endif %}>
-                            </div>
+                            {{ comment_form|crispy }}
 
-                            <div class="col-md-6 mb-3">
-                                <label for="email" class="form-label">ایمیل</label>
-                                <input type="email" name="email" id="email"
-                                       class="form-control form-control-lg rounded-3"
-                                       placeholder="example@gmail.com"
-                                       value="{{ request.user.email }}"
-                                        {% if user.is_authenticated %} readonly {% endif %}>
-                            </div>
+                            {# --- دکمه ارسال --- #}
+                            <button type="submit" class="btn btn-primary mt-3">ارسال نظر</button>
+                        </form>
+                    {% else %}
+                        {# --- نمایش پیام و دکمه لاگین برای کاربران مهمان --- #}
+                        <div class="text-center py-5">
+                            <p class="lead text-muted">برای ثبت نظر، لطفاً وارد حساب کاربری خود شوید.</p>
+                            {# دکمه‌ای که به صفحه لاگین هدایت می‌کند #}
+                            <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg px-4 shadow-sm">
+                                ورود به حساب کاربری
+                            </a>
                         </div>
+                    {% endif %}
 
-                        <div class="mb-4">
-                            <label for="comment_text" class="form-label">متن نظر</label>
-                            <textarea name="text" id="comment_text"
-                                      class="form-control form-control-lg rounded-3"
-                                      rows="5"
-                                      placeholder="نظر خود را اینجا بنویسید..."></textarea>
-                        </div>
 
-                        <button type="submit" class="btn btn-primary btn-lg px-4 shadow-sm">
-                            ارسال نظر
-                        </button>
-                    </form>
                 </div>
             </div>
         </div>
@@ -261,4 +267,5 @@
         حذف کتاب کتاب
     </a>
 </div>
+
 

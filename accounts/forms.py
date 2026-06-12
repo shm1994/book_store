@@ -30,3 +30,4 @@ class CustomUserChangeForm(UserChangeForm):
         self.fields['last_name'].label = 'نام خانوادگی'
         self.fields['email'].label = 'ایمیل'
         self.fields['age'].label = 'سن'
+

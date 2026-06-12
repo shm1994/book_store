@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
 
+
     # local app
     'accounts',
     'pages',
@@ -147,3 +148,12 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
 
 # email config
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+LANGUAGE_CODE = 'fa-ir'  # زبان فارسی
+USE_L10N = True  # فعال کردن Localize کردن (بومی‌سازی)
+USE_TZ = True  # استفاده از منطقه زمانی (Time Zone)
+TIME_ZONE = 'Asia/Tehran'  # منطقه زمانی تهران
+
+# اگر بخوای تاریخ رو به شمسی تبدیل کنی، این خط رو هم اضافه کن:
+# این خط به طور خودکار از jdatetime استفاده می‌کنه
+TIME_FACTORIES = ('jdatetime.datetime_factory',)
